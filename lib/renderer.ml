@@ -111,3 +111,45 @@ let render_home (site : Site.site) =
       ]
   in
   to_string doc
+
+let rfc822_of_date date_str =
+  try
+    match String.split_on_char '-' date_str with
+    | [y; m; d] ->
+      let year  = int_of_string y in
+      let month = int_of_string m in
+      let day   = int_of_string d in
+      let month_names = [| "Jan"; "Feb"; "Mar"; "Apr"; "May"; "Jun";
+                           "Jul"; "Aug"; "Sep"; "Oct"; "Nov"; "Dec" |] in
+      let day_names = [| "Sun"; "Mon"; "Tue"; "Wed"; "Thu"; "Fri"; "Sat" |] in
+      let t = [| 0; 3; 2; 5; 0; 3; 5; 1; 4; 6; 2; 4 |] in
+      let y = if month < 3 then year - 1 else year in
+      let dow = (y + y/4 - y/100 + y/400 + t.(month-1) + day) mod 7 in
+      Printf.sprintf "%s, %02d %s %d 00:00:00 +0000"
+        day_names.(dow) day month_names.(month-1) year
+    | _ -> date_str
+  with _ -> date_str
+
+let render_rss ~base_url (posts : Site.page list) =
+  let item_of_post post =
+    let fm = fm_of_page post in
+    let date = Option.value ~default:"" fm.date |> rfc822_of_date in
+    Printf.sprintf {|
+		<item>
+			<title>%s</title>
+			<link>%s/blog/%s/</link>
+			<description></description>
+			<pubDate>%s</pubDate>
+		</item>|} fm.title base_url fm.slug date
+  in
+  let items = String.concat "\n" (List.map item_of_post posts) in
+  Printf.sprintf {|<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+	<channel>
+		<title>David Moulin</title>
+		<link>%s</link>
+		<language>en-us</language>
+		<description>Backend engineer.</description>
+		%s
+	</channel>
+</rss>|} base_url items
