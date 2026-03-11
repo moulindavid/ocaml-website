@@ -1,2 +1,2 @@
 let () =
-  print_endline "OCaml SSG — starting build..."
+  print_endline "OCaml SSG — starting build....."
