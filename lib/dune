@@ -1,3 +1,4 @@
 (library
  (name website_lib)
+ (wrapped false)
  (libraries cmarkit yaml tyxml))
