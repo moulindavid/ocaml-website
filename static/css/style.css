@@ -1,0 +1,36 @@
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: Georgia, serif;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  color: #222;
+  line-height: 1.6;
+}
+
+nav.site-nav {
+  margin-bottom: 2rem;
+  font-family: monospace;
+}
+
+nav.site-nav a { color: #444; text-decoration: none; }
+nav.site-nav a:hover { text-decoration: underline; }
+
+main.content { min-height: 60vh; }
+
+h1 { margin-top: 0; }
+
+.post-date { color: #666; font-size: 0.9em; margin-top: -0.5rem; }
+
+footer.site-footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd;
+  color: #999;
+  font-size: 0.85em;
+}
+
+pre { background: #f5f5f5; padding: 1rem; overflow-x: auto; }
+code { font-size: 0.9em; }
+a { color: #0055bb; }
