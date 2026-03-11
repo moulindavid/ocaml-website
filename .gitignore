@@ -1,0 +1,24 @@
+# Generated site output
+output/
+
+# OCaml / dune build artifacts
+_build/
+*.install
+*.merlin
+.merlin
+
+# opam switch (if local)
+_opam/
+
+# Editor
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+*\docs
+PLAN.md
+.claude
