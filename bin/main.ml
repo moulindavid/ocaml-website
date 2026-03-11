@@ -46,6 +46,29 @@ let url_for kind (fm : Site.frontmatter) =
   | `Art       -> Printf.sprintf "/art/%s/" fm.slug
   | `Unknown   -> assert false
 
+
+let copy_file src dst =
+  let ic = open_in_bin src in
+  let n = in_channel_length ic in
+  let s = Bytes.create n in
+  really_input ic s 0 n;
+  close_in ic;
+  let oc = open_out_bin dst in
+  output_bytes oc s;
+  close_out oc
+
+let rec copy_tree src dst =
+  mkdir_p dst;
+  Sys.readdir src
+  |> Array.to_list
+  |> List.iter (fun name ->
+        let src_path = Filename.concat src name in
+        let dst_path = Filename.concat dst name in
+        if Sys.is_directory src_path
+        then copy_tree src_path dst_path
+        else copy_file src_path dst_path)
+
+
 let () =
   print_endline "OCaml SSG — starting build...";
 
@@ -144,9 +167,7 @@ let () =
   print_endline "  wrote output/index.html";
 
   (* Copy static assets *)
-  if Sys.file_exists "static" then begin
-    ignore (Sys.command "cp -r static/. output/");
-    print_endline "  copied static/ -> output/"
-  end;
+  if Sys.file_exists "static" then
+    copy_tree "static" "output";
 
   print_endline "Done."
