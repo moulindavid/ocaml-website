@@ -68,10 +68,19 @@ let rec copy_tree src dst =
         then copy_tree src_path dst_path
         else copy_file src_path dst_path)
 
+let rec delete_tree path =
+    if Sys.is_directory path then begin
+      Sys.readdir path
+      |> Array.to_list
+      |> List.iter (fun name -> delete_tree (Filename.concat path name));
+      Unix.rmdir path
+    end else
+      Sys.remove path
 
 let () =
   print_endline "OCaml SSG — starting build...";
-
+  if Sys.file_exists "output" then
+    delete_tree "output";
   let content_dir = "content" in
   let files =
     if Sys.file_exists content_dir && Sys.is_directory content_dir
