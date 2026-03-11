@@ -100,6 +100,12 @@ a:hover {
   text-decoration-color: var(--link-hover);
 }
 
+.tagline {
+  color: var(--muted);
+  margin-top: -1rem;
+  margin-bottom: 0;
+}
+
 hr {
   border: none;
   border-top: 1px solid var(--border);

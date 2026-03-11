@@ -1,5 +1,5 @@
 ---
-title: Hello, World
+title: Bip, Bop
 date: 2026-03-11
 tags:
   - meta
@@ -13,5 +13,5 @@ This is the first post on this site, built with a custom OCaml static site gener
 Because it's fun, type-safe, and fast to compile.
 
 ```ocaml
-let () = print_endline "Hello, World"
+let () = print_endline "Bip, Bop"
 ```
