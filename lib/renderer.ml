@@ -90,7 +90,8 @@ let fm_of_page = function
   | Site.Project { fm; _ } | Site.ArtPiece { fm; _ } -> fm
 
 let render_home (site : Site.site) =
-  let recent_posts = List.filteri (fun i _ -> i < 5) site.posts in
+  let recent_posts    = List.filteri (fun i _ -> i < 5) site.posts in
+  let recent_projects = List.filteri (fun i _ -> i < 5) site.projects in
   let post_items =
     List.map (fun p ->
       let fm = fm_of_page p in
@@ -100,14 +101,25 @@ let render_home (site : Site.site) =
          ]
     ) recent_posts
   in
+  let project_items =
+    List.map (fun p ->
+      let fm = fm_of_page p in
+      li [ a ~a:[a_href ("/portfolio/" ^ fm.slug ^ "/")] [txt fm.title] ]
+    ) recent_projects
+  in
   let doc =
-    page_shell ~title:"Home"
-      [ h1 [txt "Hello"]
-      ; p  [txt "Welcome to my site."]
-      ; h2 [txt "Recent posts"]
-      ; (if post_items = [] then p [txt "No posts yet."]
+    page_shell ~title:"David Moulin"
+      [ h1 [txt "David Moulin"]
+      ; p ~a:[a_class ["tagline"]] [txt "Sometimes, when I'm in the right mood, I try to make stuff."]
+      ; hr ()
+      ; h2 [txt "Writing"]
+      ; (if post_items = [] then p [txt "Nothing yet."]
          else ul post_items)
       ; p [ a ~a:[a_href "/blog/"] [txt "All posts \xe2\x86\x92"] ]
+      ; h2 [txt "Projects"]
+      ; (if project_items = [] then p [txt "Nothing yet."]
+         else ul project_items)
+      ; p [ a ~a:[a_href "/portfolio/"] [txt "All projects \xe2\x86\x92"] ]
       ]
   in
   to_string doc
