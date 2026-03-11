@@ -175,6 +175,11 @@ let () =
   write_file "output/index.html" (Renderer.render_home site);
   print_endline "  wrote output/index.html";
 
+  (* RSS feed *)
+  let base_url = Option.value ~default:"http://localhost:8000" (Sys.getenv_opt "BASE_URL") in
+  write_file "output/rss.xml" (Renderer.render_rss ~base_url site.posts);
+  print_endline "  wrote output/rss.xml";
+
   (* Copy static assets *)
   if Sys.file_exists "static" then
     copy_tree "static" "output";
