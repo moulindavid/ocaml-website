@@ -1,36 +1,178 @@
-*, *::before, *::after { box-sizing: border-box; }
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:         #faf9ff;
+  --text:       #1e1b2e;
+  --muted:      #7b6f9e;
+  --accent:     #6c47b8;
+  --accent-dim: #e8e2f8;
+  --link:       #6c47b8;
+  --link-hover: #4a2f8a;
+  --border:     #d8d0f0;
+  --code-bg:    #f0ecfa;
+}
 
 body {
-  font-family: Georgia, serif;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-  color: #222;
-  line-height: 1.6;
+  font-family: 'IBM Plex Mono', monospace;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
 }
 
-nav.site-nav {
-  margin-bottom: 2rem;
-  font-family: monospace;
-}
-
-nav.site-nav a { color: #444; text-decoration: none; }
-nav.site-nav a:hover { text-decoration: underline; }
-
-main.content { min-height: 60vh; }
-
-h1 { margin-top: 0; }
-
-.post-date { color: #666; font-size: 0.9em; margin-top: -0.5rem; }
-
+/* ── Layout ── */
+nav.site-nav,
+main.content,
 footer.site-footer {
-  margin-top: 3rem;
-  padding-top: 1rem;
-  border-top: 1px solid #ddd;
-  color: #999;
-  font-size: 0.85em;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
-pre { background: #f5f5f5; padding: 1rem; overflow-x: auto; }
-code { font-size: 0.9em; }
-a { color: #0055bb; }
+/* ── Nav ── */
+nav.site-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+nav.site-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+nav.site-nav a:hover {
+  color: var(--accent);
+}
+
+/* ── Main content ── */
+main.content {
+  min-height: 60vh;
+  padding-top: 1rem;
+  padding-bottom: 4rem;
+}
+
+/* ── Typography ── */
+h1 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+  transition: color 0.15s, text-decoration-color 0.15s;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration-color: var(--link-hover);
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2.5rem 0;
+}
+
+/* ── Post list (index pages) ── */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+ul li {
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+ul li:first-child {
+  border-top: 1px solid var(--border);
+}
+
+ul li a {
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 600;
+}
+
+ul li a:hover {
+  color: var(--accent);
+}
+
+/* ── Post metadata ── */
+.post-date {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin-top: -0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Code ── */
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.88em;
+  background: var(--code-bg);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+/* ── Footer ── */
+footer.site-footer {
+  padding-top: 1.5rem;
+  padding-bottom: 2.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-align: center;
+}
