@@ -27,8 +27,7 @@ jobs:
           ocaml-compiler: "5.2"
 
       - name: Install dependencies
-        run: opam install . --deps-only --yes
-
+        run: opam install dune cmarkit yaml tyxml --yes
       - name: Build site
         run: opam exec -- dune exec bin/main.exe
 
