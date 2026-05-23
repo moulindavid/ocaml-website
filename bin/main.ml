@@ -88,6 +88,20 @@ let () =
     else []
   in
 
+  (* Copy non-.md content files (e.g. PDFs) to output at the same relative path *)
+  let asset_files = List.filter (fun p ->
+    not (Filename.check_suffix p ".md")
+  ) files in
+  List.iter (fun src ->
+    let norm = String.map (fun c -> if c = '\\' then '/' else c) src in
+    let prefix = "content/" in
+    let rel = String.sub norm (String.length prefix) (String.length norm - String.length prefix) in
+    let dst = "output/" ^ rel in
+    mkdir_p (Filename.dirname dst);
+    copy_file src dst;
+    Printf.printf "  copied %s\n%!" dst
+  ) asset_files;
+
   (* Only process .md files *)
   let md_files = List.filter (fun p ->
     Filename.check_suffix p ".md"

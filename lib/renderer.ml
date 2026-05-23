@@ -33,6 +33,8 @@ let render_page (page : Site.page) =
     let doc =
       page_shell ~title:fm.title
         [ h1 [txt fm.title]
+        ; p ~a:[a_class ["cv-download"]]
+            [ a ~a:[a_href "/cv/cv.pdf"; Unsafe.string_attrib "download" ""] [txt "Download PDF"] ]
         ; Unsafe.data body_html
         ]
     in

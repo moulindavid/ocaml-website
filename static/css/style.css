@@ -141,6 +141,13 @@ ul li a:hover {
   color: var(--accent);
 }
 
+/* ── CV ── */
+.cv-download {
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.82rem;
+}
+
 /* ── Post metadata ── */
 .post-meta {
   color: var(--muted);
