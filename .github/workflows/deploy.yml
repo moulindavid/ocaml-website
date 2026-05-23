@@ -30,7 +30,7 @@ jobs:
         run: opam install dune cmarkit yaml tyxml --yes
 
       - name: Build site
-        run: opam exec -- dune exec bin/main.exe
+        run: BASE_URL=https://moulindavid.com opam exec -- dune exec bin/main.exe
 
       - name: Copy static assets
         run: cp -r static/. output/ 2>/dev/null || true
