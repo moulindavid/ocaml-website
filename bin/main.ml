@@ -189,10 +189,14 @@ let () =
   write_file "output/index.html" (Renderer.render_home site);
   print_endline "  wrote output/index.html";
 
-  (* RSS feed *)
+  (* RSS feed, sitemap, robots.txt *)
   let base_url = Option.value ~default:"http://localhost:8000" (Sys.getenv_opt "BASE_URL") in
   write_file "output/rss.xml" (Renderer.render_rss ~base_url site.posts);
   print_endline "  wrote output/rss.xml";
+  write_file "output/sitemap.xml" (Renderer.render_sitemap ~base_url site);
+  print_endline "  wrote output/sitemap.xml";
+  write_file "output/robots.txt" (Renderer.render_robots ~base_url);
+  print_endline "  wrote output/robots.txt";
 
   (* Copy static assets *)
   if Sys.file_exists "static" then

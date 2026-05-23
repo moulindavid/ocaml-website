@@ -144,6 +144,35 @@ let rfc822_of_date date_str =
     | _ -> date_str
   with _ -> date_str
 
+let render_sitemap ~base_url (site : Site.site) =
+  let url ?(lastmod="") loc =
+    if lastmod = "" then
+      Printf.sprintf "  <url><loc>%s%s</loc></url>" base_url loc
+    else
+      Printf.sprintf "  <url><loc>%s%s</loc><lastmod>%s</lastmod></url>" base_url loc lastmod
+  in
+  let static_urls = List.map url ["/"; "/blog/"; "/portfolio/"; "/art/"; "/cv/"] in
+  let post_urls = List.map (fun p ->
+    let fm = fm_of_page p in
+    url ~lastmod:(Option.value ~default:"" fm.date) (Printf.sprintf "/blog/%s/" fm.slug)
+  ) site.posts in
+  let project_urls = List.map (fun p ->
+    let fm = fm_of_page p in
+    url (Printf.sprintf "/portfolio/%s/" fm.slug)
+  ) site.projects in
+  let art_urls = List.map (fun p ->
+    let fm = fm_of_page p in
+    url (Printf.sprintf "/art/%s/" fm.slug)
+  ) site.art in
+  let all = static_urls @ post_urls @ project_urls @ art_urls in
+  Printf.sprintf {|<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+%s
+</urlset>|} (String.concat "\n" all)
+
+let render_robots ~base_url =
+  Printf.sprintf "User-agent: *\nAllow: /\n\nSitemap: %s/sitemap.xml\n" base_url
+
 let render_rss ~base_url (posts : Site.page list) =
   let item_of_post post =
     let fm = fm_of_page post in
@@ -158,6 +187,7 @@ let render_rss ~base_url (posts : Site.page list) =
   in
   let items = String.concat "\n" (List.map item_of_post posts) in
   Printf.sprintf {|<?xml version="1.0" encoding="UTF-8" ?>
+<?xml-stylesheet type="text/xsl" href="/rss.xsl"?>
 <rss version="2.0">
 	<channel>
 		<title>David Moulin</title>
