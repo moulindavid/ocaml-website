@@ -7,6 +7,7 @@ let page_shell ~title content =
        ; meta ~a:[ Unsafe.string_attrib "name" "viewport"
                  ; a_content "width=device-width, initial-scale=1" ] ()
        ; link ~rel:[`Stylesheet] ~href:"/css/style.css" ()
+       ; link ~rel:[`Icon] ~href:"/favicon.svg" ()
        ])
     (body
        [ nav ~a:[a_class ["site-nav"]]
