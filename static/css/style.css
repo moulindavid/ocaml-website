@@ -142,11 +142,23 @@ ul li a:hover {
 }
 
 /* ── Post metadata ── */
-.post-date {
+.post-meta {
   color: var(--muted);
   font-size: 0.82rem;
   margin-top: -0.75rem;
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.post-tag {
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-size: 0.75rem;
+  padding: 0.1em 0.5em;
+  border-radius: 3px;
 }
 
 /* ── Code ── */

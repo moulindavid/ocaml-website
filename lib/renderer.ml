@@ -38,14 +38,18 @@ let render_page (page : Site.page) =
     in
     to_string doc
   | Site.Post { fm; body_html } ->
-    let date_el =
-      match fm.date with
-      | Some d -> [p ~a:[a_class ["post-date"]] [txt d]]
-      | None   -> []
+    let tag_spans = List.map (fun t ->
+      span ~a:[a_class ["post-tag"]] [txt t]
+    ) fm.tags in
+    let meta_content = match fm.date, fm.tags with
+      | None,   []   -> []
+      | Some d, []   -> [p ~a:[a_class ["post-meta"]] [txt d]]
+      | None,   _    -> [p ~a:[a_class ["post-meta"]] tag_spans]
+      | Some d, _    -> [p ~a:[a_class ["post-meta"]] ([txt d; txt " "] @ tag_spans)]
     in
     let doc =
       page_shell ~title:fm.title
-        ([ h1 [txt fm.title] ] @ date_el @ [ Unsafe.data body_html ])
+        ([ h1 [txt fm.title] ] @ meta_content @ [ Unsafe.data body_html ])
     in
     to_string doc
   | Site.Project { fm; body_html } ->
