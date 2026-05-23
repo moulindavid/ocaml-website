@@ -28,11 +28,15 @@ jobs:
 
       - name: Install dependencies
         run: opam install dune cmarkit yaml tyxml --yes
+
       - name: Build site
         run: opam exec -- dune exec bin/main.exe
 
       - name: Copy static assets
         run: cp -r static/. output/ 2>/dev/null || true
+
+      - name: Create CNAME file
+        run: echo "moulindavid.com" > output/CNAME
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
