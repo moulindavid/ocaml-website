@@ -11,13 +11,9 @@ let page_shell ~title content =
     (body
        [ nav ~a:[a_class ["site-nav"]]
            [ a ~a:[a_href "/"] [txt "Home"]
-           ; txt " · "
            ; a ~a:[a_href "/blog/"] [txt "Blog"]
-           ; txt " · "
            ; a ~a:[a_href "/portfolio/"] [txt "Portfolio"]
-           ; txt " · "
            ; a ~a:[a_href "/art/"] [txt "Art"]
-           ; txt " · "
            ; a ~a:[a_href "/cv/"] [txt "CV"]
            ]
        ; main ~a:[a_class ["content"]] content

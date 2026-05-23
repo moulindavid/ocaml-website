@@ -35,7 +35,8 @@ footer.site-footer {
 nav.site-nav {
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.25rem 0;
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
   font-size: 0.85rem;
@@ -46,6 +47,17 @@ nav.site-nav a {
   color: var(--muted);
   text-decoration: none;
   transition: color 0.15s;
+}
+
+nav.site-nav a::after {
+  content: "·";
+  margin: 0 0.75rem;
+  color: var(--border);
+  pointer-events: none;
+}
+
+nav.site-nav a:last-child::after {
+  content: none;
 }
 
 nav.site-nav a:hover {
