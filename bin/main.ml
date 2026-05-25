@@ -79,6 +79,7 @@ let rec delete_tree path =
 
 let () =
   print_endline "OCaml SSG — starting build...";
+  let base_url = Option.value ~default:"http://localhost:8000" (Sys.getenv_opt "BASE_URL") in
   if Sys.file_exists "output" then
     delete_tree "output";
   let content_dir = "content" in
@@ -128,7 +129,7 @@ let () =
            output_path_for `Art fm)
         | `Unknown -> assert false
       in
-      let html = Renderer.render_page page in
+      let html = Renderer.render_page ~base_url ~url:(url_for kind fm) page in
       write_file out_path html;
       Printf.printf "  wrote %s\n%!" out_path;
       match kind with
@@ -154,6 +155,7 @@ let () =
   (* Index pages *)
   let blog_index =
     Renderer.render_index
+      ~base_url ~canonical_path:"/blog/"
       ~title:"Blog"
       site.posts
       (fun p -> url_for `Blog (fm_of p))
@@ -165,6 +167,7 @@ let () =
 
   let portfolio_index =
     Renderer.render_index
+      ~base_url ~canonical_path:"/portfolio/"
       ~title:"Portfolio"
       site.projects
       (fun p -> url_for `Portfolio (fm_of p))
@@ -176,6 +179,7 @@ let () =
 
   let art_index =
     Renderer.render_index
+      ~base_url ~canonical_path:"/art/"
       ~title:"Art"
       site.art
       (fun p -> url_for `Art (fm_of p))
@@ -186,11 +190,10 @@ let () =
   print_endline "  wrote output/art/index.html";
 
   (* Home page *)
-  write_file "output/index.html" (Renderer.render_home site);
+  write_file "output/index.html" (Renderer.render_home ~base_url site);
   print_endline "  wrote output/index.html";
 
   (* RSS feed, sitemap, robots.txt *)
-  let base_url = Option.value ~default:"http://localhost:8000" (Sys.getenv_opt "BASE_URL") in
   write_file "output/rss.xml" (Renderer.render_rss ~base_url site.posts);
   print_endline "  wrote output/rss.xml";
   write_file "output/sitemap.xml" (Renderer.render_sitemap ~base_url site);

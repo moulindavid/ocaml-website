@@ -1,6 +1,6 @@
 open Tyxml.Html
 
-let page_shell ~title content =
+let page_shell ~title ~canonical content =
   html ~a:[a_lang "en"]
     (head (Tyxml.Html.title (txt title))
        [ meta ~a:[a_charset "utf-8"] ()
@@ -8,6 +8,7 @@ let page_shell ~title content =
                  ; a_content "width=device-width, initial-scale=1" ] ()
        ; link ~rel:[`Stylesheet] ~href:"/css/style.css" ()
        ; link ~rel:[`Icon] ~href:"/favicon.svg" ()
+       ; link ~rel:[`Other "canonical"] ~href:canonical ()
        ])
     (body
        [ nav ~a:[a_class ["site-nav"]]
@@ -24,11 +25,12 @@ let page_shell ~title content =
 let to_string doc =
   Format.asprintf "%a" (Tyxml.Html.pp ()) doc
 
-let render_page (page : Site.page) =
+let render_page ~base_url ~url (page : Site.page) =
+  let canonical = base_url ^ url in
   match page with
   | Site.Cv { fm; body_html } ->
     let doc =
-      page_shell ~title:fm.title
+      page_shell ~title:fm.title ~canonical
         [ h1 [txt fm.title]
         ; p ~a:[a_class ["cv-download"]]
             [ a ~a:[a_href "/cv/cv.pdf"; Unsafe.string_attrib "download" ""] [txt "Download PDF"] ]
@@ -47,13 +49,13 @@ let render_page (page : Site.page) =
       | Some d, _    -> [p ~a:[a_class ["post-meta"]] ([txt d; txt " "] @ tag_spans)]
     in
     let doc =
-      page_shell ~title:fm.title
+      page_shell ~title:fm.title ~canonical
         ([ h1 [txt fm.title] ] @ meta_content @ [ Unsafe.data body_html ])
     in
     to_string doc
   | Site.Project { fm; body_html } ->
     let doc =
-      page_shell ~title:fm.title
+      page_shell ~title:fm.title ~canonical
         [ h1 [txt fm.title]
         ; Unsafe.data body_html
         ]
@@ -61,14 +63,14 @@ let render_page (page : Site.page) =
     to_string doc
   | Site.ArtPiece { fm; body_html } ->
     let doc =
-      page_shell ~title:fm.title
+      page_shell ~title:fm.title ~canonical
         [ h1 [txt fm.title]
         ; Unsafe.data body_html
         ]
     in
     to_string doc
 
-let render_index ~title items item_url item_title item_date =
+let render_index ~base_url ~canonical_path ~title items item_url item_title item_date =
   let li_of_item item =
     let url  = item_url item in
     let name = item_title item in
@@ -81,7 +83,7 @@ let render_index ~title items item_url item_title item_date =
       li [ a ~a:[a_href url] [txt name] ]
   in
   let doc =
-    page_shell ~title
+    page_shell ~title ~canonical:(base_url ^ canonical_path)
       [ h1 [txt title]
       ; ul (List.map li_of_item items)
       ]
@@ -92,7 +94,7 @@ let fm_of_page = function
   | Site.Cv { fm; _ } | Site.Post { fm; _ }
   | Site.Project { fm; _ } | Site.ArtPiece { fm; _ } -> fm
 
-let render_home (site : Site.site) =
+let render_home ~base_url (site : Site.site) =
   let recent_posts    = List.filteri (fun i _ -> i < 5) site.posts in
   let recent_projects = List.filteri (fun i _ -> i < 5) site.projects in
   let post_items =
@@ -111,7 +113,7 @@ let render_home (site : Site.site) =
     ) recent_projects
   in
   let doc =
-    page_shell ~title:"David Moulin"
+    page_shell ~title:"David Moulin" ~canonical:(base_url ^ "/")
       [ h1 [txt "David Moulin"]
       ; p ~a:[a_class ["tagline"]] [txt "Sometimes, when I'm in the right mood, I try to make stuff."]
       ; hr ()
