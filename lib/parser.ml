@@ -43,11 +43,44 @@ let parse_frontmatter yaml_str slug =
   end;
   Site.{ title = !title; date = !date; tags = !tags; slug }
 
+(* --- LaTeX math support --- *)
+(* $...$ and $$...$$ regions are protected from the CommonMark parser so that
+   characters like _ and * inside math are not interpreted as emphasis, then
+   restored as spans for KaTeX's auto-render to typeset. *)
+
+let math_blocks = ref []
+
+let protect_math body =
+  math_blocks := [];
+  let repl s =
+    let i = List.length !math_blocks in
+    math_blocks := !math_blocks @ [Str.matched_string s];
+    Printf.sprintf "@@MATH%d@@" i
+  in
+  let body = Str.global_substitute (Str.regexp "\\$\\$[^$]+\\$\\$") repl body in
+  Str.global_substitute (Str.regexp "\\$[^$]+\\$") repl body
+
+let escape_html s =
+  s
+  |> Str.global_replace (Str.regexp_string "&") "&amp;"
+  |> Str.global_replace (Str.regexp_string "<") "&lt;"
+  |> Str.global_replace (Str.regexp_string ">") "&gt;"
+  |> Str.global_replace (Str.regexp_string "\"") "&quot;"
+
+let restore_math html =
+  Str.global_substitute (Str.regexp "@@MATH\\([0-9]+\\)@@")
+    (fun s ->
+      let i = int_of_string (Str.matched_group 1 s) in
+      let m = List.nth !math_blocks i in
+      Printf.sprintf "<span class=\"math\">%s</span>" (escape_html m))
+    html
+
 let parse_file path slug =
   let raw = read_file path in
   let (yaml_str, body_str) = split_frontmatter raw in
   let fm = parse_frontmatter yaml_str slug in
   let body_html =
-    Cmarkit_html.of_doc ~safe:false (Cmarkit.Doc.of_string body_str)
+    Cmarkit_html.of_doc ~safe:false (Cmarkit.Doc.of_string (protect_math body_str))
+    |> restore_math
   in
   (fm, body_html)

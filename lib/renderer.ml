@@ -1,15 +1,32 @@
 open Tyxml.Html
 
-let page_shell ~title ~canonical content =
+let page_shell ?(with_math = false) ~title ~canonical content =
+  let math_head =
+    if not with_math then []
+    else
+      [ link ~rel:[`Stylesheet]
+          ~href:"https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" ()
+      ; script ~a:[ Unsafe.string_attrib "defer" ""
+                  ; Unsafe.string_attrib "src"
+                      "https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" ]
+          (txt "")
+      ; script ~a:[ Unsafe.string_attrib "defer" ""
+                  ; Unsafe.string_attrib "src"
+                      "https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"
+                  ; Unsafe.string_attrib "onload"
+                      "renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})" ]
+          (txt "")
+      ]
+  in
   html ~a:[a_lang "en"]
     (head (Tyxml.Html.title (txt title))
-       [ meta ~a:[a_charset "utf-8"] ()
-       ; meta ~a:[ Unsafe.string_attrib "name" "viewport"
-                 ; a_content "width=device-width, initial-scale=1" ] ()
-       ; link ~rel:[`Stylesheet] ~href:"/css/style.css" ()
-       ; link ~rel:[`Icon] ~href:"/favicon.svg" ()
-       ; link ~rel:[`Other "canonical"] ~href:canonical ()
-       ])
+       ([ meta ~a:[a_charset "utf-8"] ()
+        ; meta ~a:[ Unsafe.string_attrib "name" "viewport"
+                  ; a_content "width=device-width, initial-scale=1" ] ()
+        ; link ~rel:[`Stylesheet] ~href:"/css/style.css" ()
+        ; link ~rel:[`Icon] ~href:"/favicon.svg" ()
+        ; link ~rel:[`Other "canonical"] ~href:canonical ()
+        ] @ math_head))
     (body
        [ nav ~a:[a_class ["site-nav"]]
            [ a ~a:[a_href "/"] [txt "Home"]
@@ -49,7 +66,7 @@ let render_page ~base_url ~url (page : Site.page) =
       | Some d, _    -> [p ~a:[a_class ["post-meta"]] ([txt d; txt " "] @ tag_spans)]
     in
     let doc =
-      page_shell ~title:fm.title ~canonical
+      page_shell ~with_math:true ~title:fm.title ~canonical
         ([ h1 [txt fm.title] ] @ meta_content @ [ Unsafe.data body_html ])
     in
     to_string doc
