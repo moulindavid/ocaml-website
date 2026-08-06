@@ -14,7 +14,7 @@ let kind_of_path path =
   match String.split_on_char '/' norm |> List.rev with
   | _ :: "cv"        :: _ -> `Cv
   | _ :: "blog"      :: _ -> `Blog
-  | _ :: "portfolio" :: _ -> `Portfolio
+  | _ :: "projects" :: _ -> `Projects
   | _ :: "art"       :: _ -> `Art
   | _                     -> `Unknown
 
@@ -34,7 +34,7 @@ let output_path_for kind (fm : Site.frontmatter) =
   match kind with
   | `Cv        -> "output/cv/index.html"
   | `Blog      -> Printf.sprintf "output/blog/%s/index.html" fm.slug
-  | `Portfolio -> Printf.sprintf "output/portfolio/%s/index.html" fm.slug
+  | `Projects -> Printf.sprintf "output/projects/%s/index.html" fm.slug
   | `Art       -> Printf.sprintf "output/art/%s/index.html" fm.slug
   | `Unknown   -> assert false
 
@@ -42,7 +42,7 @@ let url_for kind (fm : Site.frontmatter) =
   match kind with
   | `Cv        -> "/cv/"
   | `Blog      -> Printf.sprintf "/blog/%s/" fm.slug
-  | `Portfolio -> Printf.sprintf "/portfolio/%s/" fm.slug
+  | `Projects -> Printf.sprintf "/projects/%s/" fm.slug
   | `Art       -> Printf.sprintf "/art/%s/" fm.slug
   | `Unknown   -> assert false
 
@@ -121,9 +121,9 @@ let () =
         | `Blog ->
           (Site.Post { fm; body_html },
            output_path_for `Blog fm)
-        | `Portfolio ->
+        | `Projects ->
           (Site.Project { fm; body_html },
-           output_path_for `Portfolio fm)
+           output_path_for `Projects fm)
         | `Art ->
           (Site.ArtPiece { fm; body_html },
            output_path_for `Art fm)
@@ -135,7 +135,7 @@ let () =
       match kind with
       | `Cv        -> { acc with cv = Some page }
       | `Blog      -> { acc with posts = acc.posts @ [page] }
-      | `Portfolio -> { acc with projects = acc.projects @ [page] }
+      | `Projects -> { acc with projects = acc.projects @ [page] }
       | `Art       -> { acc with art = acc.art @ [page] }
       | `Unknown   -> assert false
     end
@@ -167,15 +167,15 @@ let () =
 
   let portfolio_index =
     Renderer.render_index
-      ~base_url ~canonical_path:"/portfolio/"
-      ~title:"Portfolio"
+      ~base_url ~canonical_path:"/projects/"
+      ~title:"Projects"
       site.projects
-      (fun p -> url_for `Portfolio (fm_of p))
+      (fun p -> url_for `Projects (fm_of p))
       (fun p -> (fm_of p).title)
       (fun p -> (fm_of p).date)
   in
-  write_file "output/portfolio/index.html" portfolio_index;
-  print_endline "  wrote output/portfolio/index.html";
+  write_file "output/projects/index.html" portfolio_index;
+  print_endline "  wrote output/projects/index.html";
 
   let art_index =
     Renderer.render_index

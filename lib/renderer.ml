@@ -31,7 +31,7 @@ let page_shell ?(with_math = false) ~title ~canonical content =
        [ nav ~a:[a_class ["site-nav"]]
            [ a ~a:[a_href "/"] [txt "Home"]
            ; a ~a:[a_href "/blog/"] [txt "Blog"]
-           ; a ~a:[a_href "/portfolio/"] [txt "Portfolio"]
+           ; a ~a:[a_href "/projects/"] [txt "Projects"]
            ; a ~a:[a_href "/art/"] [txt "Art"]
            ; a ~a:[a_href "/cv/"] [txt "CV"]
            ]
@@ -126,13 +126,13 @@ let render_home ~base_url (site : Site.site) =
   let project_items =
     List.map (fun p ->
       let fm = fm_of_page p in
-      li [ a ~a:[a_href ("/portfolio/" ^ fm.slug ^ "/")] [txt fm.title] ]
+      li [ a ~a:[a_href ("/projects/" ^ fm.slug ^ "/")] [txt fm.title] ]
     ) recent_projects
   in
   let doc =
     page_shell ~title:"David Moulin" ~canonical:(base_url ^ "/")
       [ h1 [txt "David Moulin"]
-      ; p ~a:[a_class ["tagline"]] [txt "Sometimes, when I'm in the right mood, I try to make stuff."]
+      ; p ~a:[a_class ["tagline"]] [txt "Sometimes, I try to make stuff. Currently trying to build a game and a GDExtension to use Odin in godot"]
       ; hr ()
       ; h2 [txt "Writing"]
       ; (if post_items = [] then p [txt "Nothing yet."]
@@ -141,7 +141,7 @@ let render_home ~base_url (site : Site.site) =
       ; h2 [txt "Projects"]
       ; (if project_items = [] then p [txt "Nothing yet."]
          else ul project_items)
-      ; p [ a ~a:[a_href "/portfolio/"] [txt "All projects \xe2\x86\x92"] ]
+      ; p [ a ~a:[a_href "/projects/"] [txt "All projects \xe2\x86\x92"] ]
       ]
   in
   to_string doc
@@ -171,14 +171,14 @@ let render_sitemap ~base_url (site : Site.site) =
     else
       Printf.sprintf "  <url><loc>%s%s</loc><lastmod>%s</lastmod></url>" base_url loc lastmod
   in
-  let static_urls = List.map url ["/"; "/blog/"; "/portfolio/"; "/art/"; "/cv/"] in
+  let static_urls = List.map url ["/"; "/blog/"; "/projects/"; "/art/"; "/cv/"] in
   let post_urls = List.map (fun p ->
     let fm = fm_of_page p in
     url ~lastmod:(Option.value ~default:"" fm.date) (Printf.sprintf "/blog/%s/" fm.slug)
   ) site.posts in
   let project_urls = List.map (fun p ->
     let fm = fm_of_page p in
-    url (Printf.sprintf "/portfolio/%s/" fm.slug)
+    url (Printf.sprintf "/projects/%s/" fm.slug)
   ) site.projects in
   let art_urls = List.map (fun p ->
     let fm = fm_of_page p in
