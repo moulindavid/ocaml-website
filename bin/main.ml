@@ -165,7 +165,7 @@ let () =
   write_file "output/blog/index.html" blog_index;
   print_endline "  wrote output/blog/index.html";
 
-  let portfolio_index =
+  let projects_index =
     Renderer.render_index
       ~base_url ~canonical_path:"/projects/"
       ~title:"Projects"
@@ -174,7 +174,7 @@ let () =
       (fun p -> (fm_of p).title)
       (fun p -> (fm_of p).date)
   in
-  write_file "output/projects/index.html" portfolio_index;
+  write_file "output/projects/index.html" projects_index;
   print_endline "  wrote output/projects/index.html";
 
   let art_index =
